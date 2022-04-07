@@ -15,42 +15,34 @@
 	<Window.DataTemplates>
 		<DataTemplate DataType="SolidColorBrush">
 			<Border Background="{Binding}" />
+		</DataTemplate>
+		<DataTemplate DataType="LinearGradientBrush">
+			<Border Background="{Binding}" />
+		</DataTemplate>
+		<!--<DataTemplate DataType="DrawingImage">
+			<DrawingImage Drawing="{Binding}" />
+		</DataTemplate>-->
+		<!--<DataTemplate DataType="Path">
+			<Path Data="{Binding}" />
+		</DataTemplate>-->
+		<DataTemplate DataType="StreamGeometry">
+			<PathIcon Data="{Binding}" />
         </DataTemplate>
-        <DataTemplate DataType="LinearGradientBrush">
-            <Border Background="{Binding}" />
-        </DataTemplate>
-    </Window.DataTemplates>
+	</Window.DataTemplates>
 
-
-	<StackPanel x:Name="StackPanel">
-		<StackPanel.Resources>
-			<SolidColorBrush x:Key="Brown" Color="Brown" />
-		</StackPanel.Resources>
-		<TextBlock x:Name="TextBlock" Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center">
-			<TextBlock.Resources>
-				<SolidColorBrush x:Key="MyBrush" Color="Red" />
-                <LinearGradientBrush x:Key="BackgroundGradient">
-                    <GradientStop Offset="0" Color="#C2E4F6" />
-                    <GradientStop Offset="1" Color="#95CDEC" />
-                </LinearGradientBrush>
-                <LinearGradientBrush x:Key="BackgroundGradient2">
-                    <GradientStop Offset="0" Color="White" />
-                    <GradientStop Offset="1" Color="Black" />
-                </LinearGradientBrush>
-            </TextBlock.Resources>
-		</TextBlock>
-		
-        <ItemsControl Items="{Binding Resources}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel Margin="8">
-                        <TextBlock Width="100" Text="{Binding Key}" Margin="4" />
-                        <Border BorderBrush="Black" Padding="2" BorderThickness="1">
-                            <ContentControl Content="{Binding Value}" /></Border>
-                    </DockPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-	</StackPanel>
+	<ScrollViewer>
+		<ItemsControl Items="{Binding Resources}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<DockPanel Margin="8">
+						<TextBlock Width="100" Text="{Binding Key}" Margin="4" />
+						<Border BorderBrush="Black" Padding="2" BorderThickness="1">
+							<ContentControl Content="{Binding Value}" />
+						</Border>
+					</DockPanel>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</ScrollViewer>
 
 </Window>

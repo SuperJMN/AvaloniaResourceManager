@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AvaloniaApplication1.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication1.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="AvaloniaApplication1">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Window.Resources>
+		<SolidColorBrush x:Key="MyBrush1" Color="Red" />
+		<SolidColorBrush x:Key="MyBrush2" Color="Blue" />
+		<SolidColorBrush x:Key="MyBrush3" Color="Green" />
+		<SolidColorBrush x:Key="MyBrush4" Color="Purple" />
+		<SolidColorBrush x:Key="MyBrush5" Color="Yellow" />
+	</Window.Resources>
+
+	<StackPanel Margin="30" Background="{StaticResource MyBrush3}">
+
+		<StackPanel.Resources>
+            <SolidColorBrush x:Key="MyBrush6" Color="Gold" />
+            <SolidColorBrush x:Key="MyBrush7" Color="Pink" />
+        </StackPanel.Resources>
+
+        <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<TextBlock.Resources>
+				<SolidColorBrush x:Key="MyBrush6" Color="Cyan" />
+				<SolidColorBrush x:Key="MyBrush7" Color="Orange" />
+			</TextBlock.Resources>
+		</TextBlock>
+	</StackPanel>
+
+</Window>

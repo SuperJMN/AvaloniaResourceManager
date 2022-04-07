@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Styling;
 using Core.Interfaces;
 
 namespace Core
@@ -19,17 +22,34 @@ namespace Core
 
         private IEnumerable<KeyValuePair<object, object?>> Extract(StyledElement visual)
         {
-            return visual.Resources;
+            var resourcesFromAllStyles = GetStyles(visual.Styles)
+                .OfType<Style>()
+                .SelectMany(style => style.Resources);
+
+            return visual.Resources.Concat(visual.Styles.Resources).Concat(resourcesFromAllStyles);
         }
 
         private IEnumerable<KeyValuePair<object, object?>> Extract(Application application)
         {
-            return application.Resources;
+            var resourcesFromAllStyles = GetStyles(application.Styles)
+                .OfType<Style>()
+                .SelectMany(style => style.Resources);
+
+            return application.Resources.Concat(resourcesFromAllStyles);
+        }
+
+        private IEnumerable<IStyle> GetStyles(IStyle style)
+        {
+            return MoreLinq.MoreEnumerable.TraverseBreadthFirst(style, x => x.Children);
         }
 
         private IEnumerable<KeyValuePair<object, object?>> Extract(Window window)
         {
-            return window.Resources;
+            var resourcesFromAllStyles = GetStyles(window.Styles)
+                .OfType<Style>()
+                .SelectMany(style => style.Resources);
+
+            return window.Resources.Concat(window.Styles.Resources).Concat(resourcesFromAllStyles);
         }
     }
 }

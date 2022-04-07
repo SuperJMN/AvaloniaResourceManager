@@ -1,8 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using ResourceManager;
 
-namespace ResourceManager.Views
+namespace AvaloniaApplication1.Views
 {
     public partial class MainWindow : Window
     {
@@ -11,6 +12,7 @@ namespace ResourceManager.Views
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
+            this.AttachResourceTools();
 #endif
         }
 

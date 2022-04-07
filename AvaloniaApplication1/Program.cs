@@ -3,7 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using System;
 
-namespace ResourceManager
+namespace AvaloniaApplication1
 {
     internal class Program
     {
