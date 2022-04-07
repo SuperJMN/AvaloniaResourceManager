@@ -9,24 +9,33 @@ namespace ResourceManager.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private object selectedItem;
-        private readonly ObservableAsPropertyHelper<List<ResourceNode>> resources;
+        private readonly ObservableAsPropertyHelper<List<ResourceNode>> resourceNodes;
+        private readonly ObservableAsPropertyHelper<List<KeyValuePair<object, object?>>> resources;
         public string Greeting => "Welcome to Avalonia!";
 
-        public MainWindowViewModel(IResourceInventory inventory)
+        public MainWindowViewModel(IResourceInventory resourceAnalyzer)
         {
-            resources = this.WhenAnyValue(model => model.SelectedItem)
-                .Select(o =>
+            var currentResourceNodes = this.WhenAnyValue(model => model.SelectedItem)
+                .Select(target =>
                 {
-                    if (o is null)
+                    if (target is null)
                     {
                         return new List<ResourceNode>();
                     }
-                    return inventory.Get(o).ToList();
-                })
+
+                    var nodes = resourceAnalyzer.Get(target).ToList();
+                    return nodes;
+                });
+            
+            resourceNodes = currentResourceNodes.ToProperty(this, x => x.ResourcesNodes);
+            resources = currentResourceNodes
+                .Select(list => list.SelectMany(r => r.Resources).ToList())
                 .ToProperty(this, x => x.Resources);
         }
 
-        public List<ResourceNode> Resources => resources.Value;
+        public List<KeyValuePair<object, object?>> Resources => resources.Value;
+
+        public List<ResourceNode> ResourcesNodes => resourceNodes.Value;
         
         public object SelectedItem
         {

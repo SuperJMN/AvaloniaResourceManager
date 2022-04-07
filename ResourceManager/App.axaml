@@ -8,7 +8,7 @@
     </Application.DataTemplates>
 
     <Application.Resources>
-        <SolidColorBrush x:Key="Button" />
+        <SolidColorBrush x:Key="MyBrush" Color="AliceBlue" />
     </Application.Resources>
 
     <Application.Styles>

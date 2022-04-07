@@ -17,7 +17,7 @@ namespace Core
         {
             var branch = visualBranchProvider.GetBranch(target).ToList();
             var nodes = branch
-                .Select(o => new ResourceNode (o, resourceExtractor.Extract(o)));
+                .Select(o => new ResourceNode (o, resourceExtractor.Extract(o).ToList()));
             return nodes;
         }
     }
