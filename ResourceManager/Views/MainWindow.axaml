@@ -28,6 +28,13 @@
 		<DataTemplate DataType="StreamGeometry">
 			<PathIcon Data="{Binding}" />
         </DataTemplate>
+        <DataTemplate DataType="Color">
+            <Border>
+				<Border.Background>
+					<SolidColorBrush Color="{Binding}" />
+                </Border.Background>
+            </Border>
+        </DataTemplate>
 	</Window.DataTemplates>
 
 	<ScrollViewer>
