@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ResourceManager.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ResourceManager.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ResourceManager">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+
+	<StackPanel x:Name="StackPanel">
+		<StackPanel.Resources>
+			<SolidColorBrush x:Key="Hi" />
+		</StackPanel.Resources>
+		<TextBlock x:Name="TextBlock" Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<TextBlock.Resources>
+				<SolidColorBrush x:Key="MyBrush" Color="Red" />
+			</TextBlock.Resources>
+		</TextBlock>
+		<ListBox Items="{Binding Resources}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<DockPanel>
+						<TextBlock />
+						<!--<ListBox Items="{Binding Resources}" />-->
+                    </DockPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</StackPanel>
+
+</Window>
