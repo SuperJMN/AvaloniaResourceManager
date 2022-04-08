@@ -1,11 +1,11 @@
 using Avalonia.Controls;
+using Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
+using Avalonia.Diagnostics.ResourceTools.ViewModels;
+using Avalonia.Diagnostics.ResourceTools.Views;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Core;
-using ResourceManager.ViewModels;
-using ResourceManager.Views;
 
-namespace ResourceManager;
+namespace Avalonia.Diagnostics.ResourceTools;
 
 public static class ResourceToolsExtensions
 {

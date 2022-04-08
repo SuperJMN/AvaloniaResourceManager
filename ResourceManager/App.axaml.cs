@@ -1,30 +1,28 @@
-using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
+using Avalonia.Diagnostics.ResourceTools.ViewModels;
+using Avalonia.Diagnostics.ResourceTools.Views;
 using Avalonia.Markup.Xaml;
-using Core;
-using ResourceManager.ViewModels;
-using ResourceManager.Views;
 
-namespace ResourceManager
+namespace Avalonia.Diagnostics.ResourceTools;
+
+public class App : Application
 {
-    public class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
+    }
 
-        public override void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.MainWindow = new MainWindow
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(new ResourceInventory(new ResourceExtractor(), new VisualBranchProvider())),
-                };
-            }
-
-            base.OnFrameworkInitializationCompleted();
+                DataContext = new MainWindowViewModel(new ResourceInventory(new ResourceExtractor(), new VisualBranchProvider())),
+            };
         }
+
+        base.OnFrameworkInitializationCompleted();
     }
 }

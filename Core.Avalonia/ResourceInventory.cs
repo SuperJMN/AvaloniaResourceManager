@@ -1,7 +1,4 @@
-using Avalonia.Controls;
-using Core.Interfaces;
-
-namespace Core;
+namespace Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
 
 public class ResourceInventory : IResourceInventory
 {

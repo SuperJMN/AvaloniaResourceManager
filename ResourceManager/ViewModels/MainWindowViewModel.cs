@@ -3,51 +3,52 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
-using Core.Interfaces;
+using Avalonia.Diagnostics.ResourceTools.Core;
 using DynamicData;
 using ReactiveUI;
 
-namespace ResourceManager.ViewModels
+namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
+
+public class MainWindowViewModel : ViewModelBase
 {
-    public class MainWindowViewModel : ViewModelBase
+    private object selectedItem;
+    private readonly ReadOnlyObservableCollection<ResourceGroup> resourceGroups;
+
+    public MainWindowViewModel(IResourceInventory resourceAnalyzer)
     {
-        private object selectedItem;
-        private readonly ReadOnlyObservableCollection<Resource> resources;
-
-        public MainWindowViewModel(IResourceInventory resourceAnalyzer)
-        {
-            var currentResourceNodes = this
-                .WhenAnyValue(model => model.SelectedItem)
-                .Select(target =>
+        var currentResourceNodes = this
+            .WhenAnyValue(model => model.SelectedItem)
+            .Select(target =>
+            {
+                if (target is null)
                 {
-                    if (target is null)
-                    {
-                        return new List<ResourceNode>();
-                    }
+                    return new List<ResourceNode>();
+                }
 
-                    var nodes = resourceAnalyzer.Get(target).ToList();
-                    return nodes;
-                });
+                var nodes = resourceAnalyzer.Get(target).ToList();
+                return nodes;
+            });
 
-            SourceCache<Resource, CompositeKey> cache = new(r => r.ResourceKey);
+        SourceCache<Resource, CompositeKey> cache = new(r => r.ResourceKey);
 
-            var obs = from resList in currentResourceNodes
-                from resNode in resList
-                select from n in resNode.Resources select new Resource(resNode.Parent, n.Key, n.Value);
+        var obs = from resList in currentResourceNodes
+            from resNode in resList
+            select from n in resNode.Resources select new Resource(resNode.Parent, n.Key, n.Value);
 
-            cache.PopulateFrom(obs);
+        cache.PopulateFrom(obs);
 
-            cache.Connect()
-                .Bind(out resources)
-                .Subscribe();
-        }
+        cache.Connect()
+            .Group(r => r.Value.GetType())
+            .Transform(r => new ResourceGroup(r.Key, r.Cache))
+            .Bind(out resourceGroups)
+            .Subscribe();
+    }
 
-        public ReadOnlyObservableCollection<Resource> Resources => resources;
+    public ReadOnlyObservableCollection<ResourceGroup> ResourceGroups => resourceGroups;
 
-        public object SelectedItem
-        {
-            get => selectedItem;
-            set => this.RaiseAndSetIfChanged(ref selectedItem, value);
-        }
+    public object SelectedItem
+    {
+        get => selectedItem;
+        set => this.RaiseAndSetIfChanged(ref selectedItem, value);
     }
 }

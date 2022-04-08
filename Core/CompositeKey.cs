@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace ResourceManager.ViewModels;
+namespace Avalonia.Diagnostics.ResourceTools.Core;
 
 public class CompositeKey : ValueObject
 {

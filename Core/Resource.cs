@@ -1,4 +1,4 @@
-namespace ResourceManager.ViewModels;
+namespace Avalonia.Diagnostics.ResourceTools.Core;
 
 public class Resource
 {
