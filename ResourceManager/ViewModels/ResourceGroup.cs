@@ -9,11 +9,11 @@ namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 
 public class ResourceGroup : ReactiveObject
 {
-    private readonly ReadOnlyObservableCollection<Resource> resources;
+    private readonly ReadOnlyObservableCollection<ColdResource> resources;
     private string searchText;
     public Type ResourceType { get; }
 
-    public ResourceGroup(Type resourceType, IConnectableCache<Resource, CompositeKey> itemsCache)
+    public ResourceGroup(Type resourceType, IConnectableCache<ColdResource, CompositeKey> itemsCache)
     {
         var filterPredicate = this
             .WhenAnyValue(x => x.SearchText)
@@ -32,7 +32,7 @@ public class ResourceGroup : ReactiveObject
         ResourceType = resourceType;
     }
 
-    public ReadOnlyObservableCollection<Resource> Resources => resources;
+    public ReadOnlyObservableCollection<ColdResource> Resources => resources;
 
     public string SearchText
     {
@@ -40,7 +40,7 @@ public class ResourceGroup : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref searchText, value);
     }
 
-    private static Func<Resource, bool> SearchItemFilterFunc(string? text)
+    private static Func<ColdResource, bool> SearchItemFilterFunc(string? text)
     {
         return searchItem =>
         {

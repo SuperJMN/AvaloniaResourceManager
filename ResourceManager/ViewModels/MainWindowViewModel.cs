@@ -29,11 +29,11 @@ public class MainWindowViewModel : ViewModelBase
                 return nodes;
             });
 
-        SourceCache<Resource, CompositeKey> cache = new(r => r.ResourceKey);
+        SourceCache<ColdResource, CompositeKey> cache = new(r => r.ResourceKey);
 
         var obs = from resList in currentResourceNodes
             from resNode in resList
-            select from n in resNode.Resources select new Resource(resNode.Parent, n.Key, n.Value);
+            select from n in resNode.Resources select new ColdResource(resNode.Parent, n.Key, n.Value);
 
         cache.PopulateFrom(obs);
 
