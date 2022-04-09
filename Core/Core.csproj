@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.29.0" />
     <PackageReference Include="morelinq" Version="3.3.2" />
+    <PackageReference Include="Zafiro.FileSystem" Version="3.2.1" />
   </ItemGroup>
 
   <ItemGroup>

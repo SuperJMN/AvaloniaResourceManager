@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using Avalonia.Diagnostics.ResourceTools.Core;
+using Avalonia.Diagnostics.ResourceTools.Core.Dynamic;
 using DynamicData;
 using ReactiveUI;
 
@@ -9,11 +10,11 @@ namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 
 public class ResourceGroup : ReactiveObject
 {
-    private readonly ReadOnlyObservableCollection<ColdResource> resources;
+    private readonly ReadOnlyObservableCollection<Resource> resources;
     private string searchText;
     public Type ResourceType { get; }
 
-    public ResourceGroup(Type resourceType, IConnectableCache<ColdResource, CompositeKey> itemsCache)
+    public ResourceGroup(Type resourceType, IConnectableCache<Resource, CompositeKey> itemsCache)
     {
         var filterPredicate = this
             .WhenAnyValue(x => x.SearchText)
@@ -32,7 +33,7 @@ public class ResourceGroup : ReactiveObject
         ResourceType = resourceType;
     }
 
-    public ReadOnlyObservableCollection<ColdResource> Resources => resources;
+    public ReadOnlyObservableCollection<Resource> Resources => resources;
 
     public string SearchText
     {
@@ -40,7 +41,7 @@ public class ResourceGroup : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref searchText, value);
     }
 
-    private static Func<ColdResource, bool> SearchItemFilterFunc(string? text)
+    private static Func<Resource, bool> SearchItemFilterFunc(string? text)
     {
         return searchItem =>
         {
