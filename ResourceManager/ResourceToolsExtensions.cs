@@ -11,14 +11,14 @@ public static class ResourceToolsExtensions
 {
     public static void AttachResourceTools(this TopLevel topLevel)
     {
-        var window = new MainWindow();
+        var window = new RuntimeAnalysisWindow();
+        var viewModel = new RuntimeAnalysisViewModel(new ResourceInventory(new ResourceExtractor(), new VisualBranchProvider()));
+        window.DataContext = viewModel;
         window.Show();
-        var mainWindowViewModel = new MainWindowViewModel(new ResourceInventory(new ResourceExtractor(), new VisualBranchProvider()));
-        window.DataContext = mainWindowViewModel;
 
         topLevel.AddHandler(InputElement.PointerPressedEvent, (sender, args) =>
         {
-            mainWindowViewModel.SelectedItem = args.Source;
+            viewModel.SelectedItem = args.Source;
         }, RoutingStrategies.Tunnel);
     }
 }

@@ -1,8 +1,10 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
+using Avalonia.Diagnostics.ResourceTools.Core.Static;
 using Avalonia.Diagnostics.ResourceTools.ViewModels;
 using Avalonia.Diagnostics.ResourceTools.Views;
 using Avalonia.Markup.Xaml;
+using Tests;
 
 namespace Avalonia.Diagnostics.ResourceTools;
 
@@ -17,9 +19,9 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            desktop.MainWindow = new MainWindow()
             {
-                DataContext = new MainWindowViewModel(new ResourceInventory(new ResourceExtractor(), new VisualBranchProvider())),
+                DataContext = new MainViewModel(new ResourceAnalizer()),
             };
         }
 

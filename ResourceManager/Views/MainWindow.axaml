@@ -3,82 +3,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Avalonia.Diagnostics.ResourceTools.ViewModels"
-        xmlns:behaviors="clr-namespace:Avalonia.Diagnostics.ResourceTools.Behaviors"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Avalonia.Diagnostics.ResourceTools.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="ResourceManager">
-
-	<Design.DataContext>
-		<viewModels:MainWindowViewModel/>
-	</Design.DataContext>
-
-	<Window.DataTemplates>
-		<DataTemplate DataType="SolidColorBrush">
-			<Border Width="32" Height="32" Background="{Binding}" />
-		</DataTemplate>
-		<DataTemplate DataType="LinearGradientBrush">
-			<Border Width="32" Height="32" Background="{Binding}" />
-		</DataTemplate>
-		<!--<DataTemplate DataType="DrawingImage">
-			<DrawingImage Drawing="{Binding}" />
-		</DataTemplate>-->
-		<!--<DataTemplate DataType="Path">
-			<Path Data="{Binding}" />
-		</DataTemplate>-->
-		<DataTemplate DataType="StreamGeometry">
-			<PathIcon Width="32" Height="32" Data="{Binding}">
-				<ToolTip.Tip>
-					<PathIcon Width="100" Height="100" Data="{Binding}"/>
-				</ToolTip.Tip>
-			</PathIcon>
-		</DataTemplate>
-		<DataTemplate DataType="Color">
-			<Border Width="32" Height="32">
-				<Border.Background>
-					<SolidColorBrush Color="{Binding}" />
-				</Border.Background>
-			</Border>
-		</DataTemplate>
-	</Window.DataTemplates>
-
-	<ScrollViewer>
-		<TabControl Items="{Binding ResourceGroups}">
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding ResourceType}" />
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-			<TabControl.ContentTemplate>
-				<DataTemplate DataType="viewModels:ResourceGroup">
-					<DockPanel>
-						<TextBox DockPanel.Dock="Top" Watermark="Filter by resource key" Text="{Binding SearchText, Mode=TwoWay}">
-							<Interaction.Behaviors>
-								<behaviors:TextBoxSelectAllTextBehavior/>
-							</Interaction.Behaviors>
-						</TextBox>
-						<ItemsControl Items="{Binding Resources}" Margin="8">
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<WrapPanel />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<StackPanel Margin="8">
-										<Border BorderBrush="Black" Padding="2" BorderThickness="1">
-											<ContentControl Content="{Binding Value}" />
-										</Border>
-										<TextBlock Width="100" TextWrapping="Wrap" ToolTip.Tip="{Binding Key}"
-                                                   Text="{Binding Key}" Margin="4" />
-									</StackPanel>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</DockPanel>
-				</DataTemplate>
-			</TabControl.ContentTemplate>
-		</TabControl>
-	</ScrollViewer>
-
+        Title="MainWindow" x:DataType="viewModels:MainViewModel"
+        x:CompileBindings="True">
+	<DockPanel>
+		<Button DockPanel.Dock="Top" Command="{Binding Load}">Load resources</Button>
+        <ScrollViewer>
+			<ItemsControl Items="{Binding Resources}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel ToolTip.Tip="{Binding Xaml}">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Key}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+	</DockPanel>
 </Window>

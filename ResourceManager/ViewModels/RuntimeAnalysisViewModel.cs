@@ -10,12 +10,12 @@ using ReactiveUI;
 
 namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public class RuntimeAnalysisViewModel : ViewModelBase
 {
     private object selectedItem;
     private readonly ReadOnlyObservableCollection<ResourceGroup> resourceGroups;
 
-    public MainWindowViewModel(IResourceInventory resourceAnalyzer)
+    public RuntimeAnalysisViewModel(IResourceInventory resourceAnalyzer)
     {
         var currentResourceNodes = this
             .WhenAnyValue(model => model.SelectedItem)
