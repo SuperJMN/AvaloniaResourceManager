@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reactive;
 using Avalonia.Diagnostics.ResourceTools.Core.Static;
+using Avalonia.Diagnostics.ResourceTools.Xaml;
 using Avalonia.Markup.Xaml;
 using Portable.Xaml;
 using ReactiveUI;
@@ -11,6 +12,7 @@ namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 public class ColdResourceViewModel : ViewModelBase
 {
     private readonly ObservableAsPropertyHelper<object> preview;
+    private static XamlLoader xamlLoader = new ();
 
     public ColdResourceViewModel(ColdResource resource)
     {
@@ -18,8 +20,17 @@ public class ColdResourceViewModel : ViewModelBase
         Name = resource.Name;
         Load = ReactiveCommand.Create(() =>
         {
-            return new object();
+            try
+            {
+                var load = xamlLoader.Load(resource.Xaml);
+                return load;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         });
+        Load.ThrownExceptions.Subscribe(exception => { });
 
         preview = Load.ToProperty(this, x => x.Preview);
 

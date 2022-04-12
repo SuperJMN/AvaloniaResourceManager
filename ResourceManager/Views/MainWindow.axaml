@@ -7,17 +7,54 @@
         x:Class="Avalonia.Diagnostics.ResourceTools.Views.MainWindow"
         Title="MainWindow" x:DataType="viewModels:MainViewModel"
         x:CompileBindings="True">
-	<DockPanel>
+
+    <Window.DataTemplates>
+        <DataTemplate DataType="SolidColorBrush">
+            <Border Width="32" Height="32" Background="{Binding}" />
+        </DataTemplate>
+        <DataTemplate DataType="LinearGradientBrush">
+            <Border Width="32" Height="32" Background="{Binding}" />
+        </DataTemplate>
+        <!--<DataTemplate DataType="DrawingImage">
+			<DrawingImage Drawing="{Binding}" />
+		</DataTemplate>-->
+        <!--<DataTemplate DataType="Path">
+			<Path Data="{Binding}" />
+		</DataTemplate>-->
+        <DataTemplate DataType="StreamGeometry">
+            <PathIcon Width="32" Height="32" Data="{Binding}">
+                <ToolTip.Tip>
+                    <PathIcon Width="100" Height="100" Data="{Binding}"/>
+                </ToolTip.Tip>
+            </PathIcon>
+        </DataTemplate>
+        <DataTemplate DataType="Color">
+            <Border Width="32" Height="32">
+                <Border.Background>
+                    <SolidColorBrush Color="{Binding}" />
+                </Border.Background>
+            </Border>
+        </DataTemplate>
+    </Window.DataTemplates>
+
+    <DockPanel>
 		<Button DockPanel.Dock="Top" Command="{Binding Load}">Load resources</Button>
         <ScrollViewer>
-			<ItemsControl Items="{Binding Resources}">
+            <ItemsControl Items="{Binding Resources}" Margin="8">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel>
-                            <TextBlock Text="{Binding Name}" />
-                            <TextBlock Text="{Binding Key}" />
-                            <Border BorderBrush="Black" BorderThickness="1" Background="{Binding Preview}" />
-                        </DockPanel>
+                        <StackPanel Margin="8">
+                            <Border BorderBrush="Black" Padding="2" BorderThickness="1">
+                                <ContentControl Content="{Binding Preview}" />
+                            </Border>
+                            <TextBlock Width="100" TextWrapping="Wrap" ToolTip.Tip="{Binding Key}"
+                                       Text="{Binding Key}" Margin="4" />
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
