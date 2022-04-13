@@ -1,10 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Reactive;
 using Avalonia.Diagnostics.ResourceTools.Core.Static;
 using Avalonia.Diagnostics.ResourceTools.Xaml;
-using Avalonia.Markup.Xaml;
-using Portable.Xaml;
 using ReactiveUI;
 
 namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
@@ -34,9 +31,9 @@ public class ColdResourceViewModel : ViewModelBase
 
         preview = Load.ToProperty(this, x => x.Preview);
 
-        Load
-            .Execute()
-            .Subscribe(o => { });
+        //Load
+        //    .Execute()
+        //    .Subscribe(o => { });
     }
 
     public object Preview => preview.Value;

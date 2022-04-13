@@ -1,32 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Avalonia.Diagnostics.ResourceTools.Core.Static;
 using CSharpFunctionalExtensions;
 using DynamicData;
-using Portable.Xaml;
+using FileSystem;
 using ReactiveUI;
+using Serilog;
 
 namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     private readonly ReadOnlyObservableCollection<ColdResourceViewModel> resources;
+    
 
     public MainViewModel(ResourceAnalizer analizer)
     {
-        Load = ReactiveCommand.CreateFromTask(async () =>
+        var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
+
+        Load = ReactiveCommand.CreateFromTask(() =>
         {
-            var allResources = await analizer.GetAllResources(Scheduler.Default, "E:\\Repos\\SuperJMN\\WalletWasabi");
-            return allResources.Map(r =>
-            {
-                return r.Select(cr => new ColdResourceViewModel(cr)).ToList();
-            });
+            var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi");
+            var observable = dir.Match(
+                d =>
+                {
+                    var list = analizer.GetAllResources(d).ToList();
+                    return list
+                        .Select(cr => cr.Select(x => new ColdResourceViewModel(x)));
+                },
+                s => Observable.Empty<List<ColdResourceViewModel>>());
+            return observable.ToTask();
         });
 
         SourceCache<ColdResourceViewModel, string> sourceCache = new(x => x.Key);
@@ -35,10 +43,10 @@ public class MainViewModel : ViewModelBase
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe();
 
-        Load.Subscribe(r => r.OnSuccessTry(list => sourceCache.Edit(x => x.Load(list))));
+        Load.Subscribe(list => sourceCache.Edit(x => x.Load(list)));
     }
 
     public ReadOnlyObservableCollection<ColdResourceViewModel> Resources => resources;
 
-    public ReactiveCommand<Unit, Result<List<ColdResourceViewModel>>> Load { get; }
+    public ReactiveCommand<Unit, IEnumerable<ColdResourceViewModel>> Load { get; }
 }

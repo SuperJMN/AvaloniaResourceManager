@@ -1,28 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FileSystem;
 using MoreLinq;
 
-namespace Tests;
+namespace Avalonia.Diagnostics.ResourceTools.Core.Static;
 
 public class FileProcessor<T>
 {
     private readonly Func<Stream, IEnumerable<T>> func;
-    private readonly IScheduler taskPoolScheduler;
+    private readonly IScheduler scheduler;
     private readonly ZafiroPath path;
     private readonly ZafiroFileSystem zafiroFileSystem;
     private readonly Func<IZafiroFile, bool> fileFilter;
 
-    public FileProcessor(Func<Stream, IEnumerable<T>> func, IScheduler taskPoolScheduler, ZafiroPath path, ZafiroFileSystem zafiroFileSystem, Func<IZafiroFile, bool> fileFilter)
+    public FileProcessor(Func<Stream, IEnumerable<T>> func, IScheduler scheduler, ZafiroPath path,
+        ZafiroFileSystem zafiroFileSystem, Func<IZafiroFile, bool> fileFilter)
     {
         this.func = func;
-        this.taskPoolScheduler = taskPoolScheduler;
+        this.scheduler = scheduler;
         this.path = path;
         this.zafiroFileSystem = zafiroFileSystem;
         this.fileFilter = fileFilter;
@@ -36,26 +32,24 @@ public class FileProcessor<T>
             .Map(async observable => await observable);
     }
 
-    private IObservable<IEnumerable<T>> SelectMany(IZafiroDirectory d)
+    private IObservable<IEnumerable<T>> SelectMany(IZafiroDirectory directory)
     {
-        return GetAllFiles(d)
-            .ToObservable()
+        return Files(directory)
             .Where(fileFilter)
-            .SelectMany(file => ProcessFile(file, taskPoolScheduler));
+            .SelectMany(ProcessFile);
     }
 
-    private IEnumerable<IZafiroFile> GetAllFiles(IZafiroDirectory directory)
+    private IObservable<IZafiroFile> Files(IZafiroDirectory directory)
     {
         return MoreEnumerable
             .TraverseBreadthFirst(directory, d => d.Directories)
-            .SelectMany(d => d.Files);
+            .ToObservable()
+            .SelectMany(d => Observable.Start(() => d.Files, scheduler))
+            .SelectMany(s => s);
     }
 
-    private IObservable<IEnumerable<T>> ProcessFile(IZafiroFile file, IScheduler? scheduler = default)
+    private IObservable<IEnumerable<T>> ProcessFile(IZafiroFile file)
     {
-        return Observable
-            .Using(
-                file.OpenRead,
-                s => Observable.Return(func(s), scheduler ?? Scheduler.Default));
+        return Observable.Using(file.OpenRead, s => Observable.Start(() => func(s), scheduler));
     }
 }
