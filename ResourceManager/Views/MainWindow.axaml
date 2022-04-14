@@ -15,9 +15,9 @@
         <DataTemplate DataType="LinearGradientBrush">
             <Border Width="32" Height="32" Background="{Binding}" />
         </DataTemplate>
-        <!--<DataTemplate DataType="DrawingImage">
+        <DataTemplate DataType="DrawingImage">
 			<DrawingImage Drawing="{Binding}" />
-		</DataTemplate>-->
+		</DataTemplate>
         <!--<DataTemplate DataType="Path">
 			<Path Data="{Binding}" />
 		</DataTemplate>-->
@@ -48,14 +48,24 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="8">
+                        <StackPanel Margin="8" MaxWidth="200">
                             <Border BorderBrush="Black" Padding="2" BorderThickness="1">
                                 <ContentControl Content="{Binding Preview}" />
                             </Border>
+                            <ListBox Items="{Binding Usages}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                             <TextBlock Width="100" TextWrapping="Wrap" ToolTip.Tip="{Binding Key}"
                                        Text="{Binding Key}" Margin="4" />
                             <Button Command="{Binding Load}">
                                 Load
+                            </Button>
+                            <Button Command="{Binding FindUsages}">
+                                Find usages
                             </Button>
                         </StackPanel>
                     </DataTemplate>

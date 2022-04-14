@@ -13,7 +13,7 @@ using Serilog;
 
 namespace Tests;
 
-public class ResourceFinderTests
+public class ResourceTests
 {
     [Fact]
     [Trait("Category", "Integration")]

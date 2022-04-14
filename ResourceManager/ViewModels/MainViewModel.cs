@@ -42,13 +42,13 @@ public class MainViewModel : ViewModelBase
         var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi");
         return analizer
             .GetResources(dir.Value)
-            .Select(ToViewModel)
+            .Select(resource => ToViewModel(resource, dir.Value))
             .ToList();
     }
 
-    private ColdResourceViewModel ToViewModel(ColdResource resource)
+    private static ColdResourceViewModel ToViewModel(ColdResource resource, IZafiroDirectory directory)
     {
-        return new ColdResourceViewModel(resource);
+        return new ColdResourceViewModel(resource, directory);
     }
 
     public ReadOnlyObservableCollection<ColdResourceViewModel> Resources => resources;

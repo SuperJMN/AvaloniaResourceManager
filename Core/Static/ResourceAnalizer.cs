@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Xml;
 using FileSystem;
@@ -9,22 +8,28 @@ public class ResourceAnalizer
 {
     public IObservable<ColdResource> GetResources(IZafiroDirectory directory)
     {
-        var result = directory.Files(TaskPoolScheduler.Default)
-                .Where(file => file.Path.ToString().EndsWith(".axaml"))
-                .Select(stream => Observable.Start(() =>
-                {
-                    var resFinder = new ResourceFinder();
-                    return  resFinder.FindAll(stream).ToObservable();
-                }, TaskPoolScheduler.Default))
-                .Merge(4);
-
-        return result;
+        return directory
+            .ForEachFileSelect((stream, path) => GetResources(stream, path).ToObservable());
     }
 
     public IObservable<ResourceUsage> GetUsages(IZafiroDirectory directory)
     {
         return directory
             .ForEachFileSelect((stream, path) => FindUsages(stream, path).ToObservable());
+    }
+
+    private IEnumerable<ColdResource> GetResources(Stream stream, ZafiroPath zafiroPath)
+    {
+        var doc = new XmlDocument();
+        doc.Load(stream);
+        var allNodes = GetAllNodes(doc).ToList();
+
+        var resources = from n in allNodes
+            let key = n.Attributes?["Key", "http://schemas.microsoft.com/winfx/2006/xaml"]
+            where key is not null
+            select new ColdResource(key.Value, n.Name, n.OuterXml, zafiroPath);
+
+        return resources;
     }
 
     private IEnumerable<ResourceUsage> FindUsages(Stream stream, ZafiroPath zafiroPath)
@@ -51,5 +56,10 @@ public class ResourceAnalizer
             .ToList();
 
         return nodes;
+    }
+
+    public IObservable<ResourceUsage> GetUsages(IZafiroDirectory directory, string key)
+    {
+        return GetUsages(directory).Where(r => r.Key == key);
     }
 }
