@@ -18,7 +18,7 @@ public class ResourceFinderTests
     {
         var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
         var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
-            .Map(dir => new ResourceAnalizer().GetAllResources(dir));
+            .Map(dir => new ResourceAnalizer().GetResources(dir));
 
         var result = await dir.Value.ToList();
     }

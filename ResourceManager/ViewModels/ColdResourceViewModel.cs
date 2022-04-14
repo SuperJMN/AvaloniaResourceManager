@@ -9,31 +9,15 @@ namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 public class ColdResourceViewModel : ViewModelBase
 {
     private readonly ObservableAsPropertyHelper<object> preview;
-    private static XamlLoader xamlLoader = new ();
+    private static XamlLoader xamlLoader = new();
 
     public ColdResourceViewModel(ColdResource resource)
     {
         Key = resource.Key;
         Name = resource.Name;
-        Load = ReactiveCommand.Create(() =>
-        {
-            try
-            {
-                var load = xamlLoader.Load(resource.Xaml);
-                return load;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        });
-        Load.ThrownExceptions.Subscribe(exception => { });
+        Load = ReactiveCommand.Create(() => xamlLoader.Load(resource.Xaml));
 
         preview = Load.ToProperty(this, x => x.Preview);
-
-        //Load
-        //    .Execute()
-        //    .Subscribe(o => { });
     }
 
     public object Preview => preview.Value;

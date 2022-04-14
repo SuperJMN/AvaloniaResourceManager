@@ -54,6 +54,9 @@
                             </Border>
                             <TextBlock Width="100" TextWrapping="Wrap" ToolTip.Tip="{Binding Key}"
                                        Text="{Binding Key}" Margin="4" />
+                            <Button Command="{Binding Load}">
+                                Load
+                            </Button>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

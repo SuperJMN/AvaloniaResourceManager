@@ -6,14 +6,12 @@ namespace Avalonia.Diagnostics.ResourceTools.Core.Static;
 
 public static class ObservableFileSystemMixin
 {
-
-
     public static IObservable<IZafiroFile> Files(this IZafiroDirectory directory, IScheduler scheduler)
     {
-        var ownFiles = directory.Files.ToObservable(scheduler);
+        var ownFiles = directory.Files.ToObservable();
         var fromChildren = directory.Directories
             .ToObservable(scheduler)
-            .SelectMany(d => Files(d, scheduler));
+            .SelectMany(d => Files(d, CurrentThreadScheduler.Instance));
 
         return ownFiles.Concat(fromChildren);
     }
@@ -23,17 +21,5 @@ public static class ObservableFileSystemMixin
         return fileObservable
             .Select(file => Observable.Using(file.OpenRead, transform))
             .Merge();
-    }
-}
-
-public static class FileSystemMixin
-{
-    public static IEnumerable<IZafiroFile> Files(this IZafiroDirectory directory)
-    {
-        var ownFiles = directory.Files;
-        var fromChildren = directory.Directories
-            .SelectMany(Files);
-
-        return ownFiles.Concat(fromChildren);
     }
 }

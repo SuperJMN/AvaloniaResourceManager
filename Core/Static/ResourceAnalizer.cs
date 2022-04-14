@@ -6,17 +6,16 @@ namespace Avalonia.Diagnostics.ResourceTools.Core.Static;
 
 public class ResourceAnalizer
 {
-    public IObservable<ColdResource> GetAllResources(IZafiroDirectory directory)
+    public IObservable<ColdResource> GetResources(IZafiroDirectory directory)
     {
-        var result = directory
-                .Files().ToObservable()
+        var result = directory.Files(TaskPoolScheduler.Default)
                 .Where(file => file.Path.ToString().EndsWith(".axaml"))
                 .Select(stream => Observable.Start(() =>
                 {
                     var resFinder = new ResourceFinder();
-                    return resFinder.FindAll(stream).ToObservable();
+                    return  resFinder.FindAll(stream).ToObservable();
                 }, TaskPoolScheduler.Default))
-                .Merge();
+                .Merge(4);
 
         return result;
     }
