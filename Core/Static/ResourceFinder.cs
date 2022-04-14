@@ -8,7 +8,7 @@ public class ResourceFinder
     {
         var xmlDocument = new XmlDocument();
         xmlDocument.Load(stream);
-        return GetNodesWithResources(xmlDocument)
+        return GetAllNodes(xmlDocument)
             .SelectMany(GetResourcesFromNode);
     }
 
@@ -22,7 +22,7 @@ public class ResourceFinder
         return query;
     }
 
-    private IEnumerable<XmlNode> GetNodesWithResources(XmlNode node)
+    private IEnumerable<XmlNode> GetAllNodes(XmlNode node)
     {
         var nodes = MoreLinq.MoreEnumerable
             .TraverseBreadthFirst(node, xmlNode => xmlNode.ChildNodes.Cast<XmlNode>())

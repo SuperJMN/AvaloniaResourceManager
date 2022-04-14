@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
@@ -14,46 +16,26 @@ namespace Tests;
 public class ResourceFinderTests
 {
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task Extract()
     {
         var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
         var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
             .Map(dir => new ResourceAnalizer().GetResources(dir));
 
-        var result = await dir.Value.ToList();
+        var allResources = await dir.Value.ToList();
     }
 
     [Fact]
-    public async Task Extract2()
-    {
-        var fileProcessor = new FileProcessor<ColdResource>(stream =>
-            {
-                var resFinder = new ResourceFinder();
-                return resFinder.FindAll(stream);
-            }, DefaultScheduler.Instance, "E:\\Repos\\SuperJMN\\WalletWasabi",
-            new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None),
-            file => file.Path.ToString().EndsWith(".axaml"));
-        var resources = await fileProcessor.Execute();
-    }
-
-    [Fact]
-    public async Task Extract3()
+    [Trait("Category", "Integration")]
+    public async Task Find_usages()
     {
         var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
-        var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi");
+        var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
+            .Map(dir => new ResourceAnalizer().GetUsages(dir));
 
-        var result = dir
-            .Map(d => d
-                .Files().ToObservable()
-                .Where(file => file.Path.ToString().EndsWith(".axaml"))
-                .Select(stream => Observable.Start(() =>
-                {
-                    var resFinder = new ResourceFinder();
-                    return resFinder.FindAll(stream).ToObservable();
-                }, DefaultScheduler.Instance))
-                .Merge());
-
-        var allResources = await result.Match(observable => observable.ToList().ToTask(),
-            s => Task.FromResult((IList<ColdResource>)new List<ColdResource>()));
+        var allResources = await dir.Value.ToList();
+        var grouped = allResources.GroupBy(r => r.Value)
+            .OrderByDescending(r => r.Count());
     }
 }
