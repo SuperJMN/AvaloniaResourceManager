@@ -16,11 +16,15 @@
             <Border Width="32" Height="32" Background="{Binding}" />
         </DataTemplate>
         <DataTemplate DataType="DrawingImage">
-			<DrawingImage Drawing="{Binding}" />
+			<Image>
+                <ToolTip.Tip>
+                    <Image Source="{Binding}"/>
+                </ToolTip.Tip>
+                <Image.Source>
+                    <DrawingImage Drawing="{Binding}" />
+                </Image.Source>
+            </Image>
 		</DataTemplate>
-        <!--<DataTemplate DataType="Path">
-			<Path Data="{Binding}" />
-		</DataTemplate>-->
         <DataTemplate DataType="StreamGeometry">
             <PathIcon Width="32" Height="32" Data="{Binding}">
                 <ToolTip.Tip>
@@ -39,7 +43,7 @@
 
     <DockPanel>
 		<Button DockPanel.Dock="Top" Command="{Binding Load}">Load resources</Button>
-        <ScrollViewer>
+         <ScrollViewer>
             <ItemsControl Items="{Binding Resources}" Margin="8">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -55,7 +59,10 @@
                             <ListBox Items="{Binding Usages}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path}" />
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Path}" />
+                                            <TextBlock Text="{Binding XmlLineInfo}" />
+                                        </DockPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using Avalonia.Diagnostics.ResourceTools.Core.Static;
@@ -17,12 +18,18 @@ public class ColdResourceViewModel : ViewModelBase
     public ColdResourceViewModel(ColdResource resource, IZafiroDirectory root)
     {
         Key = resource.Key;
-        Name = resource.Name;
-        Load = ReactiveCommand.Create(() => XamlLoader.Load(resource.Xaml));
+        Type = resource.Name;
+        Load = ReactiveCommand.CreateFromObservable(() =>
+        {
+            return Observable.Start(() => XamlLoader.Load(resource.Xaml), RxApp.MainThreadScheduler)
+                .Catch((Exception e) => Observable.Return(new object()));
+        });
+        Load.ThrownExceptions.Subscribe(exception => { });
         Path = resource.Path;
         preview = Load.ToProperty(this, x => x.Preview);
         FindUsages = ReactiveCommand.CreateFromObservable(() => new ResourceAnalizer().GetUsages(root, resource.Key).ToList());
         usages = FindUsages.ToProperty(this, model => model.Usages);
+        Load.Execute().Subscribe();
     }
 
     public IList<ResourceUsage> Usages => usages.Value;
@@ -35,7 +42,7 @@ public class ColdResourceViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, object> Load { get; }
 
-    public string Name { get; }
+    public string Type { get; }
 
     public string Key { get; set; }
 }

@@ -6,13 +6,15 @@ namespace Avalonia.Diagnostics.ResourceTools.Core.Static;
 
 public class ResourceUsage
 {
+    public string Name { get; }
     public ZafiroPath Path { get; }
+    public IXmlLineInfo XmlLineInfo { get; }
 
-    public ResourceUsage(XmlNode xmlNode, ZafiroPath path)
+    public ResourceUsage(string name, ZafiroPath path, IXmlLineInfo xmlLineInfo)
     {
+        Name = name;
         Path = path;
-        Key = GetKey(xmlNode);
-        Value = xmlNode.Value;
+        XmlLineInfo = xmlLineInfo;
     }
 
     private string GetKey(XmlNode xmlNode)
@@ -34,8 +36,4 @@ public class ResourceUsage
 
         throw new InvalidOperationException("Invalid node type");
     }
-
-    public string? Value { get; }
-
-    public string Key { get;  }
 }
