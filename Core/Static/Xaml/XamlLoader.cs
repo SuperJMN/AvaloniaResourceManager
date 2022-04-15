@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+﻿using System.Xml;
 using Avalonia.Markup.Xaml;
 
-namespace Avalonia.Diagnostics.ResourceTools.Xaml;
+namespace Avalonia.Diagnostics.ResourceTools.Core.Static.Xaml;
 
-public class XamlLoader
+public class XamlLoader : IXamlLoader
 {
     public object Load(string xaml)
     {
@@ -56,7 +54,7 @@ public class XamlLoader
         return rootNode;
     }
 
-    private XmlElement CreateOriginalNode(string xaml)
+    private static XmlElement CreateOriginalNode(string xaml)
     {
         var doc = new XmlDocument();
         doc.LoadXml(xaml);

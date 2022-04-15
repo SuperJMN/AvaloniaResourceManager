@@ -1,3 +1,5 @@
+using Avalonia.Diagnostics.ResourceTools.Core.Dynamic;
+
 namespace Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
 
 public class ResourceInventory : IResourceInventory

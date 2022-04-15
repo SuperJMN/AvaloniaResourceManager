@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using Avalonia.Diagnostics.ResourceTools.Core.Static;
@@ -14,16 +15,16 @@ namespace Avalonia.Diagnostics.ResourceTools.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    private readonly ReadOnlyObservableCollection<ColdResourceViewModel> resources;
-    
+    private readonly ReadOnlyObservableCollection<ResourceDefinitionViewModel> resources;
+    private string rootFolder;
+    private readonly IZafiroFileSystem fileSystem = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
 
-    public MainViewModel(ResourceAnalizer analizer)
+    public MainViewModel()
     {
-        var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
-
-        Load = ReactiveCommand.CreateFromObservable(() => From(analizer, fs));
+        RootFolder = "E:/Repos/SuperJMN/WalletWasabi";
+        Load = ReactiveCommand.CreateFromObservable(OnLoad);
         
-        SourceCache<ColdResourceViewModel, string> sourceCache = new(x => x.Key);
+        SourceCache<ResourceDefinitionViewModel, string> sourceCache = new(x => x.Key);
         sourceCache.Connect()
             .Bind(out resources)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -35,21 +36,26 @@ public class MainViewModel : ViewModelBase
         });
     }
 
-    public ReactiveCommand<Unit, IList<ColdResourceViewModel>> Load { get; set; }
-
-    private IObservable<IList<ColdResourceViewModel>> From(ResourceAnalizer analizer, ZafiroFileSystem fs)
+    private IObservable<IList<ResourceDefinitionViewModel>> OnLoad()
     {
-        var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi");
-        return analizer
-            .GetResources(dir.Value)
-            .Select(resource => ToViewModel(resource, dir.Value))
-            .ToList();
+        var rootFolderChanged = this.WhenAnyValue(r => r.RootFolder);
+        var resourcesObs = rootFolderChanged.SelectMany(s => new ResourceRoot(fileSystem.GetDirectory(s).Value).GetResources().ToList());
+        var loadMethod = resourcesObs.Select(list => list.Select(ToViewModel).ToList());
+        return loadMethod;
     }
 
-    private static ColdResourceViewModel ToViewModel(ColdResource resource, IZafiroDirectory directory)
+    public string RootFolder
     {
-        return new ColdResourceViewModel(resource, directory);
+        get => rootFolder;
+        set => this.RaiseAndSetIfChanged(ref rootFolder, value);
     }
 
-    public ReadOnlyObservableCollection<ColdResourceViewModel> Resources => resources;
+    public ReactiveCommand<Unit, IList<ResourceDefinitionViewModel>> Load { get; set; }
+
+    private static ResourceDefinitionViewModel ToViewModel(ResourceDefinition resourceDefinition)
+    {
+        return new ResourceDefinitionViewModel(resourceDefinition);
+    }
+
+    public ReadOnlyObservableCollection<ResourceDefinitionViewModel> Resources => resources;
 }

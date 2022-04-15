@@ -1,10 +1,11 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
-using Avalonia.Diagnostics.ResourceTools.Core.Static;
 using Avalonia.Diagnostics.ResourceTools.ViewModels;
 using Avalonia.Diagnostics.ResourceTools.Views;
 using Avalonia.Markup.Xaml;
-using Tests;
+using CSharpFunctionalExtensions;
+using FileSystem;
+using Serilog;
 
 namespace Avalonia.Diagnostics.ResourceTools;
 
@@ -21,7 +22,7 @@ public class App : Application
         {
             desktop.MainWindow = new MainWindow()
             {
-                DataContext = new MainViewModel(new ResourceAnalizer()),
+                DataContext = new MainViewModel(),
             };
         }
 

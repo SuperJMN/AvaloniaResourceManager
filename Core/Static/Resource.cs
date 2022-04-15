@@ -1,4 +1,4 @@
-namespace Tests;
+namespace Avalonia.Diagnostics.ResourceTools.Core.Static;
 
 public class Resource
 {

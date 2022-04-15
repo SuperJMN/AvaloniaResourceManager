@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Avalonia.Diagnostics.ResourceTools.Core.Static;
 using Xunit;
 
 namespace Tests;

@@ -1,40 +1,58 @@
 using System.Reactive.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using Avalonia.Diagnostics.ResourceTools.Core.Static.Xaml;
 using FileSystem;
+using MoreLinq;
 using MoreLinq.Extensions;
 
 namespace Avalonia.Diagnostics.ResourceTools.Core.Static;
 
-public class ResourceAnalizer
+public class ResourceRoot
 {
-    public IObservable<ColdResource> GetResources(IZafiroDirectory directory)
+    private readonly IZafiroDirectory directory;
+
+    public ResourceRoot(IZafiroDirectory directory)
+    {
+        this.directory = directory;
+        XamlLoader = new XamlLoader();
+    }
+
+    public IXamlLoader XamlLoader { get; }
+
+    public IObservable<ResourceDefinition> GetResources()
     {
         return directory
-            .ForEachFileSelect((stream, path) => GetResources(stream, path).ToObservable());
+            .ForEachFileSelect((stream, path) => GetResources(stream, path, this).ToObservable());
     }
 
-    public IObservable<ResourceUsage> GetUsages(IZafiroDirectory directory)
+    public IObservable<ResourceUsage> GetUsages()
     {
-        return directory.ForEachFileSelect((stream, path) => FindUsages(stream, path).ToObservable());
+        return directory.ForEachFileSelect((stream, path) => GetUsages(stream, path).ToObservable());
     }
 
-    private IEnumerable<ColdResource> GetResources(Stream stream, ZafiroPath zafiroPath)
+    public IObservable<ResourceUsage> GetUsages(string key)
+    {
+        return GetUsages().Where(r => r.Name == key);
+    }
+
+    private IEnumerable<ResourceDefinition> GetResources(Stream stream, ZafiroPath zafiroPath,
+        ResourceRoot resourceRoot)
     {
         var doc = new XmlDocument();
         doc.Load(stream);
         var allNodes = GetAllNodes(doc).ToList();
 
         var resources = from n in allNodes
-                        let key = n.Attributes?["Key", "http://schemas.microsoft.com/winfx/2006/xaml"]
-                        where key is not null
-                        select new ColdResource(key.Value, n.Name, n.OuterXml, zafiroPath);
+            let key = n.Attributes?["Key", "http://schemas.microsoft.com/winfx/2006/xaml"]
+            where key is not null
+            select new ResourceDefinition(key.Value, n.Name, n.OuterXml, zafiroPath, resourceRoot);
 
         return resources;
     }
 
 
-    private IList<ResourceUsage> FindUsages(Stream stream, ZafiroPath zafiroPath)
+    private IList<ResourceUsage> GetUsages(Stream stream, ZafiroPath zafiroPath)
     {
         var doc = XDocument.Load(stream, LoadOptions.SetLineInfo);
         var fromAttributes = from element in doc.Descendants()
@@ -54,20 +72,15 @@ public class ResourceAnalizer
 
     private string GetKey(string value)
     {
-        return new string(value.SkipUntil(c => c == ' ').TakeWhile(c => c != '}').ToArray());
+        return new string(SkipUntilExtension.SkipUntil(value, c => c == ' ').TakeWhile(c => c != '}').ToArray());
     }
 
     private IEnumerable<XmlNode> GetAllNodes(XmlNode node)
     {
-        var nodes = MoreLinq.MoreEnumerable
+        var nodes = MoreEnumerable
             .TraverseBreadthFirst(node, xmlNode => xmlNode.ChildNodes.Cast<XmlNode>())
             .ToList();
 
         return nodes;
-    }
-
-    public IObservable<ResourceUsage> GetUsages(IZafiroDirectory directory, string key)
-    {
-        return GetUsages(directory).Where(r => r.Name == key);
     }
 }

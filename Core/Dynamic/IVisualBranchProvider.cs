@@ -1,4 +1,4 @@
-namespace Avalonia.Diagnostics.ResourceTools.Core;
+namespace Avalonia.Diagnostics.ResourceTools.Core.Dynamic;
 
 public interface IVisualBranchProvider
 {

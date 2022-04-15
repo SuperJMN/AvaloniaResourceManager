@@ -1,3 +1,4 @@
+using Avalonia.Diagnostics.ResourceTools.Core.Dynamic;
 using Avalonia.VisualTree;
 
 namespace Avalonia.Diagnostics.ResourceTools.Core.Avalonia;

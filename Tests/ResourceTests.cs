@@ -15,27 +15,27 @@ namespace Tests;
 
 public class ResourceTests
 {
-    [Fact]
-    [Trait("Category", "Integration")]
-    public async Task Extract()
-    {
-        var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
-        var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
-            .Map(dir => new ResourceAnalizer().GetResources(dir));
+    //[Fact]
+    //[Trait("Category", "Integration")]
+    //public async Task Extract()
+    //{
+    //    var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
+    //    var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
+    //        .Map(dir => new ResourceRoot().GetResources(dir));
 
-        var allResources = await dir.Value.ToList();
-    }
+    //    var allResources = await dir.Value.ToList();
+    //}
 
-    [Fact]
-    [Trait("Category", "Integration")]
-    public async Task Find_usages()
-    {
-        var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
-        var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
-            .Map(dir => new ResourceAnalizer().GetUsages(dir));
+    //[Fact]
+    //[Trait("Category", "Integration")]
+    //public async Task Find_usages()
+    //{
+    //    var fs = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
+    //    var dir = fs.GetDirectory("E:\\Repos\\SuperJMN\\WalletWasabi")
+    //        .Map(dir => new ResourceRoot().GetUsages(dir));
 
-        var allResources = await dir.Value.ToList();
-        var grouped = allResources.GroupBy(r => r.Value)
-            .OrderByDescending(r => r.Count());
-    }
+    //    var allResources = await dir.Value.ToList();
+    //    var grouped = allResources.GroupBy(r => r.Value)
+    //        .OrderByDescending(r => r.Count());
+    //}
 }

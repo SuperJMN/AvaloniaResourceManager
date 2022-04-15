@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.13" />
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.29.0" />
     <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="Zafiro.FileSystem" Version="3.2.1" />

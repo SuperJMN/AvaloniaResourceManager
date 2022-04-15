@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Diagnostics.ResourceTools.Core.Dynamic;
 using Avalonia.Styling;
 
 namespace Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
