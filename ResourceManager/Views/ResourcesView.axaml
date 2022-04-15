@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Avalonia.Diagnostics.ResourceTools.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="viewModels:MainViewModel"
+			 x:CompileBindings="True"
+             x:Class="Avalonia.Diagnostics.ResourceTools.Views.ResourcesView">
+
+	<UserControl.DataTemplates>
+		<DataTemplate DataType="SolidColorBrush">
+			<Border Width="32" Height="32" Background="{Binding}" />
+		</DataTemplate>
+		<DataTemplate DataType="LinearGradientBrush">
+			<Border Width="32" Height="32" Background="{Binding}" />
+		</DataTemplate>
+		<DataTemplate DataType="DrawingImage">
+			<Image>
+				<ToolTip.Tip>
+					<Image Source="{Binding}"/>
+				</ToolTip.Tip>
+				<Image.Source>
+					<DrawingImage Drawing="{Binding}" />
+				</Image.Source>
+			</Image>
+		</DataTemplate>
+		<DataTemplate DataType="StreamGeometry">
+			<PathIcon Width="32" Height="32" Data="{Binding}">
+				<ToolTip.Tip>
+					<PathIcon Width="100" Height="100" Data="{Binding}"/>
+				</ToolTip.Tip>
+			</PathIcon>
+		</DataTemplate>
+		<DataTemplate DataType="Color">
+			<Border Width="32" Height="32">
+				<Border.Background>
+					<SolidColorBrush Color="{Binding}" />
+				</Border.Background>
+			</Border>
+		</DataTemplate>
+	</UserControl.DataTemplates>
+
+	<ScrollViewer>
+		<ItemsControl Items="{Binding Resources}" Margin="8">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Margin="8" MaxWidth="200">
+						<Border BorderBrush="Black" Padding="2" BorderThickness="1">
+							<ContentControl Content="{Binding Preview}" />
+						</Border>
+						<ListBox Items="{Binding Usages}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<DockPanel>
+										<TextBlock Text="{Binding Path}" />
+										<TextBlock Text="{Binding XmlLineInfo}" />
+									</DockPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+						<TextBlock Width="100" TextWrapping="Wrap" ToolTip.Tip="{Binding Key}"
+                                   Text="{Binding Key}" Margin="4" />
+						<Button Command="{Binding FindUsages}">Find usages</Button>
+					</StackPanel>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</ScrollViewer>
+</UserControl>
