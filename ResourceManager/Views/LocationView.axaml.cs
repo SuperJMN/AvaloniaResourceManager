@@ -1,13 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Avalonia.Diagnostics.ResourceTools.Views
 {
-    public partial class ResourcesView : UserControl
+    public partial class LocationView : UserControl
     {
-        public ResourcesView()
+        public LocationView()
         {
             InitializeComponent();
         }

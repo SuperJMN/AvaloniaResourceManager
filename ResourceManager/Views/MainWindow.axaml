@@ -15,6 +15,7 @@
 			<Button Command="{Binding Load}">Load resources</Button>
 			<TextBox Watermark="Project root folder" Text="{Binding RootFolder, Mode=TwoWay}" />
         </DockPanel>
-		<views:ResourcesView />
+		<views:ResourceDetailsView DockPanel.Dock="Right" Width="450" DataContext="{Binding SelectedItem}" />
+        <views:ResourcesView />
     </DockPanel>
 </Window>

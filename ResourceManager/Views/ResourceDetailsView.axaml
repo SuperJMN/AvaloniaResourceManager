@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Avalonia.Diagnostics.ResourceTools.ViewModels"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions.Custom"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:CompileBindings="True"
+             x:DataType="viewModels:ResourceDefinitionViewModel"
+             x:Class="Avalonia.Diagnostics.ResourceTools.Views.ResourceDetailsView">
+
+	<i:Interaction.Behaviors>
+		<ia:EventTriggerBehavior EventName="DataContextChanged">
+			<ia:InvokeCommandAction Command="{Binding Load}"/>
+		</ia:EventTriggerBehavior>
+	</i:Interaction.Behaviors>
+
+	<UserControl.DataTemplates>
+		<DataTemplate DataType="SolidColorBrush">
+			<Border Width="32" Height="32" Background="{Binding}" />
+		</DataTemplate>
+		<DataTemplate DataType="LinearGradientBrush">
+			<Border Width="32" Height="32" Background="{Binding}" />
+		</DataTemplate>
+		<DataTemplate DataType="DrawingImage">
+			<Image>
+				<ToolTip.Tip>
+					<Image Source="{Binding}"/>
+				</ToolTip.Tip>
+				<Image.Source>
+					<DrawingImage Drawing="{Binding}" />
+				</Image.Source>
+			</Image>
+		</DataTemplate>
+		<DataTemplate DataType="StreamGeometry">
+			<PathIcon Width="32" Height="32" Data="{Binding}">
+				<ToolTip.Tip>
+					<PathIcon Width="100" Height="100" Data="{Binding}"/>
+				</ToolTip.Tip>
+			</PathIcon>
+		</DataTemplate>
+		<DataTemplate DataType="Color">
+			<Border Width="32" Height="32">
+				<Border.Background>
+					<SolidColorBrush Color="{Binding}" />
+				</Border.Background>
+			</Border>
+		</DataTemplate>
+	</UserControl.DataTemplates>
+
+	<DockPanel>
+		<Border DockPanel.Dock="Top" BorderBrush="Black" Opacity="0.3" Padding="2" BorderThickness="1">
+			<ContentControl Content="{Binding Preview}" />
+		</Border>
+		<DockPanel>
+			<Button DockPanel.Dock="Top" Command="{Binding FindUsages}">Find usages</Button>
+			<ListBox Items="{Binding Usages}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<TextBlock ToolTip.Tip="{Binding Path}" Text="{Binding Path}" />
+							<StackPanel Orientation="Horizontal">
+								<TextBlock FontSize="12" Text="{Binding XmlLineInfo.LineNumber, StringFormat='Line {0}'}" Margin="3" />
+								<TextBlock FontSize="12" Text="{Binding XmlLineInfo.LinePosition, StringFormat='Pos {Pos}'}" Margin="3" />
+							</StackPanel>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</DockPanel>
+	</DockPanel>
+</UserControl>

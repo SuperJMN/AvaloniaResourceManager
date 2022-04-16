@@ -18,6 +18,7 @@ public class MainViewModel : ViewModelBase
     private readonly ReadOnlyObservableCollection<ResourceDefinitionViewModel> resources;
     private string rootFolder;
     private readonly IZafiroFileSystem fileSystem = new ZafiroFileSystem(new System.IO.Abstractions.FileSystem(), Maybe<ILogger>.None);
+    private ResourceDefinitionViewModel selectedItem;
 
     public MainViewModel()
     {
@@ -58,4 +59,10 @@ public class MainViewModel : ViewModelBase
     }
 
     public ReadOnlyObservableCollection<ResourceDefinitionViewModel> Resources => resources;
+
+    public ResourceDefinitionViewModel SelectedItem
+    {
+        get => selectedItem;
+        set => this.RaiseAndSetIfChanged(ref selectedItem, value);
+    }
 }

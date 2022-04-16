@@ -23,7 +23,6 @@ public class ResourceDefinitionViewModel : ViewModelBase
         preview = Load.ToProperty(this, x => x.Preview);
         FindUsages = ReactiveCommand.CreateFromObservable(() => resourceDefinition.FindUsages().ToList());
         usages = FindUsages.ToProperty(this, model => model.Usages);
-        Load.Execute().Subscribe();
         Path = resourceDefinition.Path;
     }
 
