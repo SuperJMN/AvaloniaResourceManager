@@ -3,19 +3,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Avalonia.Diagnostics.ResourceTools.ViewModels"
-        xmlns:views="clr-namespace:Avalonia.Diagnostics.ResourceTools.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Avalonia.Diagnostics.ResourceTools.Views.MainWindow"
-        Title="MainWindow" 
+        Title="MainWindow"
         x:DataType="viewModels:MainViewModel"
         x:CompileBindings="True">
 
-    <DockPanel>
-		<DockPanel DockPanel.Dock="Top">
-			<Button Command="{Binding Load}">Load resources</Button>
-			<TextBox Watermark="Project root folder" Text="{Binding RootFolder, Mode=TwoWay}" />
-        </DockPanel>
-		<views:ResourceDetailsView DockPanel.Dock="Right" Width="450" DataContext="{Binding SelectedItem}" />
-        <views:ResourcesView />
-    </DockPanel>
+	<DockPanel>
+        <TextBox DockPanel.Dock="Top" Watermark="Project root folder" Text="{Binding RootFolder, Mode=TwoWay}" />
+        <TabControl Items="{Binding Items}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Title}" />
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</TabControl>
+	</DockPanel>
 </Window>

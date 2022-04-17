@@ -22,11 +22,17 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.13" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.13.3" />
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.29.0" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.1.0" />
     <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="Portable.Xaml" Version="0.26.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.Avalonia\Core.Avalonia.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\UnusedResourcesView.axaml.cs">
+      <DependentUpon>UnusedResourcesView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

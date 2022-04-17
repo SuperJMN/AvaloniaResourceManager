@@ -1,12 +1,11 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace Avalonia.Diagnostics.ResourceTools.Views
 {
-    public class ResourcesView : UserControl
+    public class UnusedResourcesView : UserControl
     {
-        public ResourcesView()
+        public UnusedResourcesView()
         {
             InitializeComponent();
         }

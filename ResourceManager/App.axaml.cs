@@ -1,3 +1,5 @@
+using System;
+using System.Reactive.Subjects;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Diagnostics.ResourceTools.Core.Avalonia;
 using Avalonia.Diagnostics.ResourceTools.ViewModels;
@@ -20,9 +22,11 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow()
+            var subject = new ReplaySubject<string>();
+            var projectWatcher = new ProjectWatcher(subject);
+            desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel(),
+                DataContext = new MainViewModel(subject, new ITitled[] { new ResourcesViewModel(projectWatcher), new UnusedResourcesViewModel(projectWatcher) }),
             };
         }
 
